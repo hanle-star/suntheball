@@ -7,8 +7,193 @@
 </head>
 <body>
     <header>
+        <!--TITLE-->
         <h1>SUN THE BALL</h1>
+
+        <!--HEART CURSOR-->
+        <script type="text/javascript">
+        // <![CDATA[
+        var colours=new Array('#f00', '#f06', '#f0f', '#f6f', '#f39', '#f9c'); // colours of the hearts
+        var minisize=20; // smallest size of hearts in pixels
+        var maxisize=28; // biggest size of hearts in pixels
+        var hearts=66; // maximum number of hearts on screen
+        var over_or_under="over"; // set to "over" for hearts to always be on top, or "under" to allow them to float behind other objects
+
+        /*****************************
+        *JavaScript Love Heart Cursor*
+        *  (c)2013+ mf2fm web-design *
+        *   http://www.mf2fm.com/rv  *
+        *  DON'T EDIT BELOW THIS BOX *
+        *****************************/
+        var x=ox=400;
+        var y=oy=300;
+        var swide=800;
+        var shigh=600;
+        var sleft=sdown=0;
+        var herz=new Array();
+        var herzx=new Array();
+        var herzy=new Array();
+        var herzs=new Array();
+        var kiss=false;
+
+        if (typeof('addRVLoadEvent')!='function') function addRVLoadEvent(funky) {
+        var oldonload=window.onload;
+        if (typeof(oldonload)!='function') window.onload=funky;
+        else window.onload=function() {
+            if (oldonload) oldonload();
+            funky();
+        }
+        }
+
+        addRVLoadEvent(mwah);
+
+        function mwah() { if (document.getElementById) {
+        var i, heart;
+        for (i=0; i<hearts; i++) {
+            heart=createDiv("auto", "auto");
+            heart.style.visibility="hidden";
+            heart.style.zIndex=(over_or_under=="over")?"1001":"0";
+            heart.style.color=colours[i%colours.length];
+            heart.style.pointerEvents="none";
+            if (navigator.appName=="Microsoft Internet Explorer") heart.style.filter="alpha(opacity=75)";
+            else heart.style.opacity=0.75;
+            heart.appendChild(document.createTextNode(String.fromCharCode(9829)));
+            document.body.appendChild(heart);
+            herz[i]=heart;
+            herzy[i]=false;
+        }
+        set_scroll();
+        set_width();
+        herzle();
+        }}
+
+        function herzle() {
+        var c;
+        if (Math.abs(x-ox)>1 || Math.abs(y-oy)>1) {
+            ox=x;
+            oy=y;
+            for (c=0; c<hearts; c++) if (herzy[c]===false) {
+            herz[c].firstChild.nodeValue=String.fromCharCode(9829);
+            herz[c].style.left=(herzx[c]=x-minisize/2)+"px";
+            herz[c].style.top=(herzy[c]=y-minisize)+"px";
+            herz[c].style.fontSize=minisize+"px";
+            herz[c].style.fontWeight='normal';
+            herz[c].style.visibility='visible';
+            herzs[c]=minisize;
+            break;
+            }
+        }
+        for (c=0; c<hearts; c++) if (herzy[c]!==false) blow_me_a_kiss(c);
+        setTimeout("herzle()", 40);
+        }
+
+        document.onmousedown=pucker;
+        document.onmouseup=function(){clearTimeout(kiss);};
+
+        function pucker() {
+        ox=-1;
+        oy=-1;
+        kiss=setTimeout('pucker()', 100);
+        }
+
+        function blow_me_a_kiss(i) {
+        herzy[i]-=herzs[i]/minisize+i%2;
+        herzx[i]+=(i%5-2)/5;
+        if (herzy[i]<sdown-herzs[i] || herzx[i]<sleft-herzs[i] || herzx[i]>sleft+swide-herzs[i]) {
+            herz[i].style.visibility="hidden";
+            herzy[i]=false;
+        }
+        else if (herzs[i]>minisize+2 && Math.random()<.5/hearts) break_my_heart(i);
+        else {
+            if (Math.random()<maxisize/herzy[i] && herzs[i]<maxisize) herz[i].style.fontSize=(++herzs[i])+"px";
+            herz[i].style.top=herzy[i]+"px";
+            herz[i].style.left=herzx[i]+"px";
+        }
+        }
+
+        function break_my_heart(i) {
+        var t;
+        herz[i].firstChild.nodeValue=String.fromCharCode(9676);
+        herz[i].style.fontWeight='bold';
+        herzy[i]=false;
+        for (t=herzs[i]; t<=maxisize; t++) setTimeout('herz['+i+'].style.fontSize="'+t+'px"', 60*(t-herzs[i]));
+        setTimeout('herz['+i+'].style.visibility="hidden";', 60*(t-herzs[i]));
+        }
+
+        document.onmousemove=mouse;
+        function mouse(e) {
+        if (e) {
+            y=e.pageY;
+            x=e.pageX;
+        }
+        else {
+            set_scroll();
+            y=event.y+sdown;
+            x=event.x+sleft;
+        }
+        }
+
+        window.onresize=set_width;
+        function set_width() {
+        var sw_min=999999;
+        var sh_min=999999;
+        if (document.documentElement && document.documentElement.clientWidth) {
+            if (document.documentElement.clientWidth>0) sw_min=document.documentElement.clientWidth;
+            if (document.documentElement.clientHeight>0) sh_min=document.documentElement.clientHeight;
+        }
+        if (typeof(self.innerWidth)=='number' && self.innerWidth) {
+            if (self.innerWidth>0 && self.innerWidth<sw_min) sw_min=self.innerWidth;
+            if (self.innerHeight>0 && self.innerHeight<sh_min) sh_min=self.innerHeight;
+        }
+        if (document.body.clientWidth) {
+            if (document.body.clientWidth>0 && document.body.clientWidth<sw_min) sw_min=document.body.clientWidth;
+            if (document.body.clientHeight>0 && document.body.clientHeight<sh_min) sh_min=document.body.clientHeight;
+        }
+        if (sw_min==999999 || sh_min==999999) {
+            sw_min=800;
+            sh_min=600;
+        }
+        swide=sw_min;
+        shigh=sh_min;
+        }
+
+        window.onscroll=set_scroll;
+        function set_scroll() {
+        if (typeof(self.pageYOffset)=='number') {
+            sdown=self.pageYOffset;
+            sleft=self.pageXOffset;
+        }
+        else if (document.body && (document.body.scrollTop || document.body.scrollLeft)) {
+            sdown=document.body.scrollTop;
+            sleft=document.body.scrollLeft;
+        }
+        else if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.scrollLeft)) {
+            sleft=document.documentElement.scrollLeft;
+            sdown=document.documentElement.scrollTop;
+        }
+        else {
+            sdown=0;
+            sleft=0;
+        }
+        }
+
+        function createDiv(height, width) {
+        var div=document.createElement("div");
+        div.style.position="absolute";
+        div.style.height=height;
+        div.style.width=width;
+        div.style.overflow="hidden";
+        div.style.backgroundColor="transparent";
+        return (div);
+        }
+        // ]]>
+        </script>
+
+        <!--MUSIC PLAYER-->
+         <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
     </header>
+
     <main>
             <h2>full-time sleeper, part-time dog </h2>
 
@@ -30,40 +215,222 @@
             />
         </section>
 
+        <!--SUN-BITE-->
+        <section id="sun-bite">
+            <img 
+            src="assest/sun-bite.png" 
+            alt="Sun Bite" 
+            id="sun-bite"
+            />
+        </section>
 
-        <!--NOTE + MEDIA PLAYER-->
-        <div class="top-row">
+        <!--SUN ICON GIFT-->
+        <section id="sun-icon-gift">
+            <img 
+            src="https://cdn.pixabay.com/animation/2023/11/09/02/55/02-55-48-895_512.gif" 
+            alt="Sun Icon Gift" 
+            id="sun-icon-gift"
+            />
+        </section>
 
-            <!--NOTE-->
-            <div class="note-card">
-                <div class="bio" id="note">
-                    <img src="assest/stack-of-paper.png" alt="Note from owner">
-                </div>
-
-                <div class="bio" id="note-text">
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-                    </p>
-                </div>
+        <!--NOTE-->
+        <div class="note-card">
+            <div class="bio" id="note">
+                <img src="assest/stack-of-paper.png" alt="Note from owner">
             </div>
 
-
-            <!--MEDIA PLAYER-->
-            <div class="media-wrapper">
-                <div class="media-player">
-                    <img src="assest/media-player.png" alt="Media Player">
-                </div>
-
-                <video class="media-video" autoplay muted playsinline>
-                    <source src="assest/sun-running.mp4" type="video/mp4">
-                </video>
+            <div class="bio" id="note-text">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                </p>
             </div>
         </div>
-        
-        <script src="paint.js"></script>
-        <script src="carousel.js"></script>
+
+        <!--MEDIA PLAYER-->
+        <div class="media-wrapper">
+            <div class="media-player">
+                <img src="assest/media-player.png" alt="Media Player">
+            </div>
+
+            <video class="media-video" autoplay muted loop>
+                <source src="assest/sun-running.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <!--MUSIC PLAYER-->
+        <div class="player">
+            <div class="window">
+            <div class="window-body">
+
+                <div class="flex">
+
+                <!-- CLICK WHEEL -->
+                <div class="wheel">
+                    <div class="wheelcontrols">
+                    <button class="fas fa-plus" onclick="volumeUp()"></button>
+                    </div>
+
+                    <table class="wheelcontrols">
+                    <tr>
+                        <th><button class="fas fa-backward" onclick="prevTrack()"></button></th>
+                        <th class="innerwheel">
+                        <button class="playpause-track fas fa-play" onclick="playpauseTrack()"></button>
+                        </th>
+                        <th><button class="fas fa-forward" onclick="nextTrack()"></button></th>
+                    </tr>
+                    </table>
+
+                    <div class="wheelcontrols">
+                    <button class="fas fa-minus" onclick="volumeDown()"></button>
+                    </div>
+                </div>
+
+                <!-- PLAYER -->
+                <div id="musicplayer">
+
+                    <div class="flex">
+                    <marquee scrollamount="4" class="songtitle"></marquee>
+                    </div>
+
+                    <div class="seeking">
+                    <div class="current-time">00:00</div>
+
+                    <input type="range" min="1" max="100" value="0"
+                        class="seek_slider" onchange="seekTo()">
+
+                    <div class="total-duration">0:00</div>
+                    </div>
+
+                    <table class="controls">
+                    <tr>
+                        <td><button><div class="fas fa-sync"></div></button></td>
+                        <td><button><div class="fas fa-music"></div></button></td>
+                        <td><button><div class="fas fa-random"></div></button></td>
+                    </tr>
+                    </table>
+
+                    <audio id="music"></audio>
+                </div>
+
+                </div>
+
+            </div>
+            </div>
+        </div>
+        <!-- [ MUSIC PLAYER SCRIPT ] -->
         <script src="player.js"></script>
 
+        <!-- IMAGE CAROUSEL -->
+        <div class="scroll-container">
+        <div id="InfiniteScrollWrapper" class="infinite-scroll-wrapper">
+            <div id="InfiniteScroll" class="infinite-scroll-content">
+
+            <div class="infinite-scroll-items">
+
+                <div class="item-wrap">
+                <img src="assest/carousel-1.png" alt="">
+                <span class="text">Can I have a bite?</span>
+                </div>
+
+                <div class="item-wrap">
+                <img src="assest/carousel-2.jpg" alt="">
+                <span class="text">Sun-Flower</span>
+                </div>
+
+                <div class="item-wrap">
+                <img src="assest/carousel-3.png" alt="">
+                <span class="text">Little Sun</span>
+                </div>
+
+                <div class="item-wrap">
+                <img src="assest/carousel-4.png" alt="">
+                <span class="text">Wassup!</span>
+                </div>
+
+            </div>
+            </div>
+        </div>
+        </div>
+        <!-- [ CAROUSEL SCRIPT ] -->
+        <script src="carousel.js"></script>
+
+        <!--WINDOW 95 PAINT-->
+        <div id="paint-window" class="paint-window-shell">
+        <div id="title-bar" class="paint-title-bar">
+            <span class="title">Draw Something Here!</span>
+            <div class="paint-buttons">
+            <div class="btn">_</div>
+            <div class="btn">□</div>
+            <div class="btn">X</div>
+            </div>
+        </div>
+
+        <div class="paint-window-content">
+            <iframe
+            id="jspaint-frame"
+            src="https://jspaint.app/#local:5239b3cbf57058"
+            title="JS Paint"
+            frameborder="0"
+            ></iframe>
+        </div>
+        </div>
+
+        <!-- [ JS PAINT SCRIPT ] -->
+            <script src="paint.js"></script>
+
+        <!-- PROFILE CARD -->
+        <div id="profile-box">
+
+        <div id="profile-blink">
+            ... ID loading ...
+        </div>
+
+        <div id="profile-container">
+
+            <img id="profile-img" src="https://art.pixilart.com/005ad327ce862a3.gif" alt="profile image">
+
+            <div id="profile-name">
+            Hellu, I'm <strong>SUN</strong>
+            </div>
+
+            <div id="profile-scrollbox">
+
+            <mark>Breed</mark>
+            Pomerian
+
+            <br><br>
+
+            <mark>Weight</mark>
+
+            <br><br>
+
+            <mark>DOB</mark>
+            June, 2019
+            
+            <br><br>
+
+            <mark>DogBTI</mark>
+            ENFP — Enthusiastic, Noisy, Food-motivated Pup
+
+            <br><br>
+
+            <mark>Weakness</mark>
+            Has two modes: asleep and thinking about being asleep.
+            
+            <br><br>
+
+            <mark>Favorite food</mark>
+            
+            <br><br>
+
+            <mark>Contact</mark>
+            For business inquiries: email my human at <i>lehan2310@gmail.com</i>
+            </div>
+        </div>
+        </div>
     </main>
+<script src="paint.js"></script>
+<script src="carousel.js"></script>
+<script src="player.js"></script>
 </body>
 </html>
